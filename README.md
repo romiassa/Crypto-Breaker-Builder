@@ -18,10 +18,10 @@
 
 ## Usage
 
-**Start, pick:
-- **Crack: Type “KHOOR,” get “HELLO” (Caesar, shift=3).
-- ** Encrypt: Choose a cipher, encode your message.
-** Example:
+**Start, pick:**
+- **Crack: **Type “KHOOR,” get “HELLO” (Caesar, shift=3).
+- **Encrypt: **Choose a cipher, encode your message.
+** Example:**
    ```bash
   Input: KHOOR
   Output: HELLO (Caesar, shift=3 )
