@@ -17,11 +17,10 @@
 4. **Menu**: Choose to enter a message, crack it, or build one, and see results.
 
 ## Usage
-
-**Start, pick:**
-- **Crack: **Type “KHOOR,” get “HELLO” (Caesar, shift=3).
-- **Encrypt: **Choose a cipher, encode your message.
-** Example:**
-   ```bash
-  Input: KHOOR
-  Output: HELLO (Caesar, shift=3 )
+1. Start, pick:
+   - Crack: Type “KHOOR,” get “HELLO” (Caesar, shift=3).
+   - Encrypt: Choose a cipher, encode your message.
+2. Example:
+   ```plaintext
+   Input: KHOOR
+   Output: HELLO (Caesar, shift=3 )
