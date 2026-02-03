@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoTool - Encryption & Decryption</title>
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+          color: #e0e0e0;
+          min-height: 100vh;
+          padding: 20px;
+        }
+
+        .container {
+          max-width: 1400px;
+          margin: 0 auto;
+          background: rgba(20, 25, 45, 0.9);
+          border-radius: 16px;
+          padding: 30px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        header {
+          text-align: center;
+          margin-bottom: 30px;
+          padding-bottom: 20px;
+          border-bottom: 2px solid #00d9ff;
+        }
+
+        header h1 {
+          font-size: 2.5rem;
+          color: #00d9ff;
+          margin-bottom: 10px;
+        }
+
+        header p {
+          color: #a0a0a0;
+          font-size: 1.1rem;
+        }
+
+        .tabs {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 30px;
+          flex-wrap: wrap;
+        }
+
+        .tab-btn {
+          flex: 1;
+          min-width: 120px;
+          padding: 10px 16px;
+          background: rgba(0, 217, 255, 0.1);
+          border: 2px solid #00d9ff;
+          color: #00d9ff;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 0.9rem;
+          font-weight: 600;
+          transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+          background: rgba(0, 217, 255, 0.2);
+          transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+          background: #00d9ff;
+          color: #0a0e27;
+        }
+
+        .tab-content {
+          display: none;
+          animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+          display: block;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        h2 {
+          color: #00d9ff;
+          margin-bottom: 20px;
+          font-size: 1.8rem;
+        }
+
+        h3 {
+          color: #00d9ff;
+          margin-bottom: 15px;
+          font-size: 1.3rem;
+        }
+
+        .form-group {
+          margin-bottom: 20px;
+        }
+
+        label {
+          display: block;
+          margin-bottom: 8px;
+          color: #b0b0b0;
+          font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="file"],
+        textarea,
+        select {
+          width: 100%;
+          padding: 12px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 2px solid rgba(0, 217, 255, 0.3);
+          border-radius: 8px;
+          color: #e0e0e0;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        textarea:focus,
+        select:focus {
+          outline: none;
+          border-color: #00d9ff;
+          background: rgba(255, 255, 255, 0.08);
+        }
+
+        textarea {
+          resize: vertical;
+          font-family: "Courier New", monospace;
+        }
+
+        .btn {
+          padding: 12px 24px;
+          background: #00d9ff;
+          color: #0a0e27;
+          border: none;
+          border-radius: 8px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          margin-right: 8px;
+          margin-bottom: 8px;
+        }
+
+        .btn:hover {
+          background: #00b8d4;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 217, 255, 0.4);
+        }
+
+        .btn:active {
+          transform: translateY(0);
+        }
+
+        .btn-secondary {
+          background: rgba(255, 255, 255, 0.1);
+          color: #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-success {
+          background: #00ff88;
+          color: #0a0e27;
+        }
+
+        .btn-danger {
+          background: #ff4444;
+          color: white;
+        }
+
+        .result {
+          margin-top: 20px;
+          padding: 15px;
+          background: rgba(0, 217, 255, 0.1);
+          border: 2px solid #00d9ff;
+          border-radius: 8px;
+          word-wrap: break-word;
+          font-family: "Courier New", monospace;
+          display: none;
+        }
+
+        .result.show {
+          display: block;
+          animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .section {
+          background: rgba(255, 255, 255, 0.03);
+          padding: 20px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .modern-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 20px;
+        }
+
+        .error {
+          color: #ff4444;
+          background: rgba(255, 68, 68, 0.1);
+          border-color: #ff4444;
+        }
+
+        .success {
+          color: #00ff88;
+          background: rgba(0, 255, 136, 0.1);
+          border-color: #00ff88;
+        }
+
+        .info {
+          color: #00d9ff;
+          background: rgba(0, 217, 255, 0.1);
+          border-color: #00d9ff;
+        }
+
+        .file-info {
+          margin-top: 10px;
+          padding: 10px;
+          background: rgba(0, 217, 255, 0.05);
+          border-radius: 6px;
+          font-size: 0.9rem;
+        }
+
+        .download-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin-top: 15px;
+          background: #00ff88;
+          color: #0a0e27;
+        }
+
+        .download-btn:hover {
+          background: #00cc6a;
+        }
+
+        .file-preview {
+          max-width: 100%;
+          max-height: 200px;
+          margin-top: 10px;
+          border-radius: 6px;
+          display: none;
+        }
+
+        .file-preview.show {
+          display: block;
+        }
+
+        .file-input-container {
+          position: relative;
+          display: inline-block;
+          width: 100%;
+        }
+
+        .file-input-label {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 12px;
+          background: rgba(0, 217, 255, 0.1);
+          border: 2px dashed rgba(0, 217, 255, 0.5);
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-align: center;
+          min-height: 60px;
+        }
+
+        .file-input-label:hover {
+          background: rgba(0, 217, 255, 0.2);
+          border-color: #00d9ff;
+        }
+
+        .file-input-label i {
+          margin-right: 8px;
+          font-size: 1.2rem;
+        }
+
+        .file-input {
+          position: absolute;
+          left: 0;
+          top: 0;
+          opacity: 0;
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+        }
+
+        .history-item {
+          background: rgba(255, 255, 255, 0.03);
+          padding: 15px;
+          border-left: 4px solid #00d9ff;
+          border-radius: 6px;
+          margin-bottom: 12px;
+        }
+
+        .history-item .timestamp {
+          color: #64748b;
+          font-size: 0.9em;
+        }
+
+        .history-item .operation {
+          color: #00d9ff;
+          font-weight: 600;
+          margin: 8px 0;
+        }
+
+        .filter-section {
+          background: rgba(255, 255, 255, 0.05);
+          padding: 15px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .filter-row {
+          display: flex;
+          gap: 15px;
+          flex-wrap: wrap;
+          margin-bottom: 10px;
+        }
+
+        .filter-group {
+          flex: 1;
+          min-width: 200px;
+        }
+
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        }
+
+        .stat-card {
+          background: rgba(0, 217, 255, 0.1);
+          padding: 20px;
+          border-radius: 8px;
+          text-align: center;
+          border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .stat-number {
+          font-size: 2rem;
+          font-weight: bold;
+          color: #00d9ff;
+          margin-bottom: 5px;
+        }
+
+        .stat-label {
+          font-size: 0.9rem;
+          color: #a0a0a0;
+        }
+
+        .hash-result {
+          background: rgba(255, 193, 7, 0.1);
+          border: 2px solid #ffc107;
+          border-radius: 8px;
+          padding: 15px;
+          margin: 10px 0;
+        }
+
+        .cracked {
+          background: rgba(0, 255, 136, 0.1);
+          border-color: #00ff88;
+        }
+
+        @media (max-width: 768px) {
+          .container {
+            padding: 15px;
+          }
+
+          header h1 {
+            font-size: 2rem;
+          }
+
+          .tabs {
+            flex-direction: column;
+          }
+
+          .tab-btn {
+            width: 100%;
+          }
+
+          .filter-row {
+            flex-direction: column;
+          }
+        }
+
+        select {
+          background: rgba(255, 255, 255, 0.03) !important;
+          color: #00d9ff !important;
+          border: 2px solid #00d9ff !important;
+          border-radius: 8px !important;
+          padding: 10px !important;
+          font-family: "Courier New", monospace !important;
+          font-weight: 600 !important;
+          box-shadow: 0 0 12px rgba(0, 217, 255, 0.3) !important;
+          appearance: none !important;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        select:hover {
+          background: #1e2757 !important;
+          border-color: #00ffff !important;
+          box-shadow: 0 0 18px rgba(0, 255, 255, 0.5) !important;
+        }
+
+        .progress-bar {
+          height: 6px;
+          background: rgba(0, 217, 255, 0.2);
+          border-radius: 3px;
+          margin-top: 10px;
+          overflow: hidden;
+          display: none;
+        }
+
+        .progress-bar-inner {
+          height: 100%;
+          background: #00d9ff;
+          width: 0%;
+          transition: width 0.3s ease;
+        }
+
+        /* Table styles for history */
+        .history-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+        }
+
+        .history-table th,
+        .history-table td {
+          padding: 12px;
+          text-align: left;
+          border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .history-table th {
+          background: rgba(0, 217, 255, 0.1);
+          color: #00d9ff;
+          font-weight: 600;
+        }
+
+        .history-table tr:hover {
+          background: rgba(0, 217, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 CryptoTool - Complete Toolkit</h1>
+            <p>Encrypt, Decrypt, Crack Hashes & Hide Messages</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('encrypt')">Text Encrypt</button>
+            <button class="tab-btn" onclick="showTab('decrypt')">Text Decrypt</button>
+            <button class="tab-btn" onclick="showTab('crack')">Crack Classic</button>
+            <button class="tab-btn" onclick="showTab('hash-crack')">Hash Cracking</button>
+            <button class="tab-btn" onclick="showTab('auto-crack-modern')">Auto Crack Modern</button>
+            <button class="tab-btn" onclick="showTab('steganography')">Image Steg</button>
+            <button class="tab-btn" onclick="showTab('audio')">Audio Steg</button>
+            <button class="tab-btn" onclick="showTab('file')">File Encrypt</button>
+            <button class="tab-btn" onclick="showTab('modern')">Modern Crypto</button>
+            <button class="tab-btn" onclick="showTab('padding-oracle')">Padding Oracle</button>
+            <button class="tab-btn" onclick="showTab('history')">History</button>
+        </div>
+
+        <!-- Text Encrypt Tab -->
+        <div id="encrypt" class="tab-content active">
+            <h2>Encrypt Text</h2>
+            <div class="form-group">
+                <label for="encrypt-text">Enter Text:</label>
+                <textarea id="encrypt-text" rows="4" placeholder="Enter your message here..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="encrypt-cipher">Select Cipher:</label>
+                <select id="encrypt-cipher">
+                    <option value="caesar">Caesar Cipher</option>
+                    <option value="reverse">Reverse Cipher</option>
+                    <option value="atbash">Atbash Cipher</option>
+                    <option value="vigenere">Vigenère Cipher</option>
+                    <option value="polybius">Polybius Square</option>
+                    <option value="rot13">ROT13</option>
+                    <option value="beaufort">Beaufort</option>
+                    <option value="autokey">Autokey</option>
+                    <option value="affine">Affine Cipher</option>
+                    <option value="morse">Morse Code</option>
+                    <option value="binary">Binary</option>
+                    <option value="hex">Hexadecimal</option>
+                    <option value="ascii">ASCII Shift</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="encrypt-key">Key:</label>
+                <input type="text" id="encrypt-key" placeholder="Enter key (e.g., 3 for Caesar)">
+            </div>
+            <button class="btn" onclick="encryptText()">Encrypt</button>
+            <div id="encrypt-result" class="result"></div>
+        </div>
+
+        <!-- Text Decrypt Tab -->
+        <div id="decrypt" class="tab-content">
+            <h2>Decrypt Text</h2>
+            <div class="form-group">
+                <label for="decrypt-text">Enter Encrypted Text:</label>
+                <textarea id="decrypt-text" rows="4" placeholder="Enter encrypted message..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="decrypt-cipher">Select Cipher:</label>
+                <select id="decrypt-cipher">
+                    <option value="caesar">Caesar Cipher</option>
+                    <option value="reverse">Reverse Cipher</option>
+                    <option value="atbash">Atbash Cipher</option>
+                    <option value="vigenere">Vigenère Cipher</option>
+                    <option value="polybius">Polybius Square</option>
+                    <option value="rot13">ROT13</option>
+                    <option value="beaufort">Beaufort</option>
+                    <option value="autokey">Autokey</option>
+                    <option value="affine">Affine Cipher</option>
+                    <option value="morse">Morse Code</option>
+                    <option value="binary">Binary</option>
+                    <option value="hex">Hexadecimal</option>
+                    <option value="ascii">ASCII Shift</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="decrypt-key">Key:</label>
+                <input type="text" id="decrypt-key" placeholder="Enter key">
+            </div>
+            <button class="btn" onclick="decryptText()">Decrypt</button>
+            <div id="decrypt-result" class="result"></div>
+        </div>
+
+        <!-- Crack Classic Ciphers Tab -->
+        <div id="crack" class="tab-content">
+            <h2>Crack Classic Ciphers</h2>
+            <div class="form-group">
+                <label for="crack-text">Enter Encrypted Text:</label>
+                <textarea id="crack-text" rows="4" placeholder="Paste encrypted message to auto-crack..."></textarea>
+            </div>
+            <button class="btn" onclick="crackCipher()">Auto Crack Cipher</button>
+            <div id="crack-result" class="result"></div>
+        </div>
+
+        <!-- Hash Cracking Tab -->
+        <div id="hash-crack" class="tab-content">
+            <h2>🔍 Hash Cracking</h2>
+            
+            <div class="modern-grid">
+                <div class="section">
+                    <h3>Generate Hash</h3>
+                    <div class="form-group">
+                        <label for="hash-text">Text to Hash:</label>
+                        <textarea id="hash-text" rows="3" placeholder="Enter text to hash..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="hash-type">Hash Algorithm:</label>
+                        <select id="hash-type">
+                            <option value="md5">MD5</option>
+                            <option value="sha1">SHA-1</option>
+                            <option value="sha256">SHA-256</option>
+                            <option value="sha512">SHA-512</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="generateHash()">Generate Hash</button>
+                    <div id="hash-result" class="result"></div>
+                </div>
+
+                <div class="section">
+                    <h3>Crack Hash</h3>
+                    <div class="form-group">
+                        <label for="crack-hash-input">Hash to Crack:</label>
+                        <textarea id="crack-hash-input" rows="3" placeholder="Paste hash here..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="crack-hash-type">Hash Type (or Auto-detect):</label>
+                        <select id="crack-hash-type">
+                            <option value="auto">Auto-detect</option>
+                            <option value="md5">MD5</option>
+                            <option value="sha1">SHA-1</option>
+                            <option value="sha256">SHA-256</option>
+                            <option value="sha512">SHA-512</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-danger" onclick="crackHash()">Crack Hash</button>
+                    <div class="progress-bar" id="hash-progress">
+                        <div class="progress-bar-inner" id="hash-progress-inner"></div>
+                    </div>
+                    <div id="crack-hash-result" class="result"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Hash History</h3>
+                <button class="btn btn-secondary" onclick="loadHashHistory()">Load Hash Operations</button>
+                <div id="hash-history-list" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <!-- Image Steganography Tab -->
+        <div id="steganography" class="tab-content">
+            <h2>Image Steganography</h2>
+            <div class="steg-section">
+                <h3>Hide Message in Image</h3>
+                <div class="form-group">
+                    <label for="steg-encode-image">Select Image:</label>
+                    <div class="file-input-container">
+                        <label class="file-input-label" for="steg-encode-image">
+                            <i>📁</i> Choose an image file
+                        </label>
+                        <input type="file" id="steg-encode-image" class="file-input" accept="image/*">
+                    </div>
+                    <div id="steg-encode-file-info" class="file-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="steg-encode-message">Secret Message:</label>
+                    <textarea id="steg-encode-message" rows="3" placeholder="Enter secret message..."></textarea>
+                </div>
+                <button class="btn" onclick="encodeImage()">Hide Message</button>
+            </div>
+
+            <div class="steg-section">
+                <h3>Extract Message from Image</h3>
+                <div class="form-group">
+                    <label for="steg-decode-image">Select Image:</label>
+                    <div class="file-input-container">
+                        <label class="file-input-label" for="steg-decode-image">
+                            <i>📁</i> Choose an image file
+                        </label>
+                        <input type="file" id="steg-decode-image" class="file-input" accept="image/*">
+                    </div>
+                    <div id="steg-decode-file-info" class="file-info"></div>
+                </div>
+                <button class="btn" onclick="decodeImage()">Extract Message</button>
+                <div id="steg-result" class="result"></div>
+            </div>
+        </div>
+
+        <!-- Audio Encryption Tab -->
+        <div id="audio" class="tab-content">
+            <h2>Audio Steganography</h2>
+            <div class="audio-section">
+                <h3>Hide Message in Audio</h3>
+                <div class="form-group">
+                    <label for="audio-encode-file">Select Audio File (MP3/WAV):</label>
+                    <div class="file-input-container">
+                        <label class="file-input-label" for="audio-encode-file">
+                            <i>🎵</i> Choose an audio file
+                        </label>
+                        <input type="file" id="audio-encode-file" class="file-input" accept="audio/*">
+                    </div>
+                    <div id="audio-encode-file-info" class="file-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="audio-encode-message">Secret Message:</label>
+                    <textarea id="audio-encode-message" rows="3" placeholder="Enter secret message..."></textarea>
+                </div>
+                <button class="btn" onclick="encodeAudio()">Hide Message in Audio</button>
+            </div>
+
+            <div class="audio-section">
+                <h3>Extract Message from Audio</h3>
+                <div class="form-group">
+                    <label for="audio-decode-file">Select Audio File:</label>
+                    <div class="file-input-container">
+                        <label class="file-input-label" for="audio-decode-file">
+                            <i>🎵</i> Choose an audio file
+                        </label>
+                        <input type="file" id="audio-decode-file" class="file-input" accept="audio/*">
+                    </div>
+                    <div id="audio-decode-file-info" class="file-info"></div>
+                </div>
+                <button class="btn" onclick="decodeAudio()">Extract Message</button>
+                <div id="audio-result" class="result"></div>
+            </div>
+        </div>
+
+        <!-- File Encryption Tab -->
+        <div id="file" class="tab-content">
+            <h2>File Encryption</h2>
+            <div class="file-section">
+                <h3>Encrypt File</h3>
+                <div class="form-group">
+                    <label for="file-encrypt-input">Select File:</label>
+                    <div class="file-input-container">
+                        <label class="file-input-label" for="file-encrypt-input">
+                            <i>📁</i> Choose a file to encrypt
+                        </label>
+                        <input type="file" id="file-encrypt-input" class="file-input">
+                    </div>
+                    <div id="file-encrypt-file-info" class="file-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="file-encrypt-password">Password:</label>
+                    <input type="password" id="file-encrypt-password" placeholder="Enter password">
+                </div>
+                <button class="btn" onclick="encryptFile()">Encrypt File</button>
+            </div>
+
+            <div class="file-section">
+                <h3>Decrypt File (with Password)</h3>
+                <div class="form-group">
+                    <label for="file-decrypt-input">Select Encrypted File:</label>
+                    <div class="file-input-container">
+                        <label class="file-input-label" for="file-decrypt-input">
+                            <i>🔒</i> Choose an encrypted file
+                        </label>
+                        <input type="file" id="file-decrypt-input" class="file-input">
+                    </div>
+                    <div id="file-decrypt-file-info" class="file-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="file-decrypt-password">Password:</label>
+                    <input type="password" id="file-decrypt-password" placeholder="Enter password">
+                </div>
+                <button class="btn" onclick="decryptFile()">Decrypt File</button>
+                <button class="btn btn-secondary" onclick="bruteForceFile()">Brute Force (No Password)</button>
+                <div id="file-decrypt-result" class="result"></div>
+            </div>
+        </div>
+
+        <!-- Modern Crypto Tab -->
+        <div id="modern" class="tab-content">
+            <h2>Modern Cryptography & Utilities</h2>
+            
+            <div class="modern-grid">
+                <div class="modern-section">
+                    <h3>AES-GCM Encryption</h3>
+                    <div class="form-group">
+                        <label for="aes-text">Text to Encrypt:</label>
+                        <textarea id="aes-text" rows="3" placeholder="Enter text..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="aes-password">Password:</label>
+                        <input type="password" id="aes-password" placeholder="Enter password">
+                    </div>
+                    <button class="btn" onclick="aesEncrypt()">Encrypt</button>
+                    <button class="btn" onclick="aesDecrypt()">Decrypt</button>
+                    <div id="aes-result" class="result"></div>
+                </div>
+
+                <div class="modern-section">
+                    <h3>Base64 Encoding</h3>
+                    <div class="form-group">
+                        <label for="base64-text">Text:</label>
+                        <textarea id="base64-text" rows="3" placeholder="Enter text..."></textarea>
+                    </div>
+                    <button class="btn" onclick="base64Encode()">Encode</button>
+                    <button class="btn" onclick="base64Decode()">Decode</button>
+                    <div id="base64-result" class="result"></div>
+                </div>
+
+                <div class="modern-section">
+                    <h3>SHA-256 Hashing</h3>
+                    <div class="form-group">
+                        <label for="sha256-text">Text to Hash:</label>
+                        <textarea id="sha256-text" rows="3" placeholder="Enter text..."></textarea>
+                    </div>
+                    <button class="btn" onclick="sha256Hash()">Generate Hash</button>
+                    <div id="sha256-result" class="result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto Crack Modern Crypto Tab -->
+        <div id="auto-crack-modern" class="tab-content">
+            <h2>Auto Crack Modern Cryptography</h2>
+            <p style="color: #888; margin-bottom: 20px;">Automatically detect and decrypt AES-GCM and Base64 without knowing the password or cipher type.</p>
+            <div class="form-group">
+                <label for="modern-crack-text">Enter Encrypted Text:</label>
+                <textarea id="modern-crack-text" rows="4" placeholder="Paste AES-GCM encrypted or Base64 encoded text..."></textarea>
+            </div>
+            <button class="btn" onclick="autoCrackModern()">Auto Detect & Crack</button>
+            <div id="modern-crack-result" class="result"></div>
+        </div>
+
+        <!-- NEW: Padding Oracle Attack Tab -->
+        <div id="padding-oracle" class="tab-content">
+            <h2>🔓 Padding Oracle Attack</h2>
+            <p style="color: #888; margin-bottom: 20px;">Advanced attack that exploits padding validation vulnerabilities in AES encryption</p>
+            
+            <div class="modern-grid">
+                <div class="section">
+                    <h3>Text Encryption Attack</h3>
+                    <div class="form-group">
+                        <label for="padding-oracle-text">Encrypted Text:</label>
+                        <textarea id="padding-oracle-text" rows="4" placeholder="Paste AES encrypted text..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="known-prefix">Known Password Prefix (optional):</label>
+                        <input type="text" id="known-prefix" placeholder="e.g., 'admin', 'user'">
+                    </div>
+                    <button class="btn btn-danger" onclick="performPaddingOracleText()">Launch Padding Oracle Attack</button>
+                    <div id="padding-oracle-text-result" class="result"></div>
+                </div>
+
+                <div class="section">
+                    <h3>File Encryption Attack</h3>
+                    <div class="form-group">
+                        <label for="padding-oracle-file">Encrypted File:</label>
+                        <div class="file-input-container">
+                            <label class="file-input-label" for="padding-oracle-file-input">
+                                <i>🔒</i> Choose encrypted file
+                            </label>
+                            <input type="file" id="padding-oracle-file-input" class="file-input">
+                        </div>
+                        <div id="padding-oracle-file-info" class="file-info"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="file-known-prefix">Known Password Prefix (optional):</label>
+                        <input type="text" id="file-known-prefix" placeholder="e.g., 'admin', 'user'">
+                    </div>
+                    <button class="btn btn-danger" onclick="performPaddingOracleFile()">Attack File</button>
+                    <div id="padding-oracle-file-result" class="result"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Vulnerability Detection</h3>
+                <div class="form-group">
+                    <label for="vulnerability-check-text">Check ciphertext for padding vulnerabilities:</label>
+                    <textarea id="vulnerability-check-text" rows="3" placeholder="Paste encrypted text to analyze..."></textarea>
+                </div>
+                <button class="btn btn-secondary" onclick="checkPaddingVulnerability()">Analyze Vulnerability</button>
+                <div id="vulnerability-result" class="result"></div>
+            </div>
+
+            <div class="section">
+                <h3>Modern Crack with Method Choice</h3>
+                <div class="form-group">
+                    <label for="modern-crack-input">Encrypted Text/File:</label>
+                    <textarea id="modern-crack-input" rows="3" placeholder="Paste encrypted data..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="crack-method">Cracking Method:</label>
+                    <select id="crack-method">
+                        <option value="auto">Auto (Try Both)</option>
+                        <option value="bruteforce">Brute Force Only</option>
+                        <option value="padding_oracle">Padding Oracle Only</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modern-known-prefix">Known Prefix (optional):</label>
+                    <input type="text" id="modern-known-prefix" placeholder="e.g., 'admin'">
+                </div>
+                <button class="btn btn-success" onclick="performModernCrack()">Start Modern Crack</button>
+                <div id="modern-crack-method-result" class="result"></div>
+            </div>
+        </div>
+
+        <!-- Enhanced History Tab -->
+        <div id="history" class="tab-content">
+            <h2>📊 Operation History</h2>
+            
+            <div class="filter-section">
+                <h3>Filter Operations</h3>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="history-operation-type">Show:</label>
+                        <select id="history-operation-type">
+                            <option value="all">All Operations</option>
+                            <option value="encrypt">🔒 Encrypted Items</option>
+                            <option value="decrypt">🔓 Decrypted Items</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-success" onclick="loadCombinedHistory()">
+                    🔍 Show Selected
+                </button>
+                <button class="btn btn-secondary" onclick="clearHistoryFilters()">
+                    🗑️ Show All
+                </button>
+            </div>
+
+            <div class="history-table-container">
+                <h3>📋 Recent Operations</h3>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Type</th>
+                            <th>Method</th>
+                            <th>Input/Output</th>
+                            <th>Download</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <!-- History data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+    const API_URL = 'http://localhost:8000/api';
+    
+   
+    // Initialize file input handlers
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set up file input handlers for all file inputs
+        const fileInputs = document.querySelectorAll('.file-input');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const fileInfoId = this.id + '-info';
+                const fileInfo = document.getElementById(fileInfoId);
+                if (this.files.length > 0) {
+                    const file = this.files[0];
+                    fileInfo.innerHTML = `<strong>Selected:</strong> ${file.name} (${formatFileSize(file.size)})`;
+                    
+                    // Show preview for images
+                    if (this.accept.includes('image') && file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewId = this.id + '-preview';
+                            let preview = document.getElementById(previewId);
+                            if (!preview) {
+                                preview = document.createElement('img');
+                                preview.id = previewId;
+                                preview.className = 'file-preview';
+                                fileInfo.appendChild(preview);
+                            }
+                            preview.src = e.target.result;
+                            preview.classList.add('show');
+                        }.bind(this);
+                        reader.readAsDataURL(file);
+                    }
+                } else {
+                    fileInfo.innerHTML = '';
+                }
+            });
+        });
+        
+        // Load history on page load if we're on history tab
+        if (document.getElementById('history').classList.contains('active')) {
+            loadCombinedHistory();
+        }
+    });
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // ==================== PADDING ORACLE ATTACK FUNCTIONS ====================
+
+    async function performPaddingOracleText() {
+        const text = document.getElementById('padding-oracle-text').value;
+        const knownPrefix = document.getElementById('known-prefix').value;
+        const resultDiv = document.getElementById('padding-oracle-text-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter encrypted text', true);
+            return;
+        }
+
+        showResult(resultDiv, '<div class="info">🚀 Launching Padding Oracle Attack... This may take a while.</div>', false);
+
+        try {
+            const response = await fetch(`${API_URL}/padding-oracle-text`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    ciphertext: text,
+                    known_prefix: knownPrefix
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `
+                    <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid #00ff88; padding: 15px; border-radius: 8px;">
+                        <strong style="color: #00ff88;">✅ ATTACK SUCCESSFUL!</strong><br><br>
+                        <strong>Password Found:</strong> <code style="font-size: 1.2em;">${data.password}</code><br>
+                        <strong>Method:</strong> ${data.method}<br>
+                        <strong>Requests Made:</strong> ${data.requests_made}<br>
+                        <strong>Decrypted Text:</strong><br>
+                        <div class="result-text" style="margin-top: 10px;">${data.text}</div>
+                    </div>
+                `);
+            } else {
+                showResult(resultDiv, `
+                    <div style="background: rgba(255, 68, 68, 0.1); border: 2px solid #ff4444; padding: 15px; border-radius: 8px;">
+                        <strong style="color: #ff4444;">❌ Attack Completed</strong><br><br>
+                        <strong>Status:</strong> ${data.error}<br>
+                        <strong>Requests Made:</strong> ${data.requests_made}<br>
+                        <strong>Passwords Tested:</strong> ${data.passwords_tested}
+                    </div>
+                `, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function performPaddingOracleFile() {
+        const file = document.getElementById('padding-oracle-file-input').files[0];
+        const knownPrefix = document.getElementById('file-known-prefix').value;
+        const resultDiv = document.getElementById('padding-oracle-file-result');
+
+        if (!file) {
+            showResult(resultDiv, 'Please select an encrypted file', true);
+            return;
+        }
+
+        showResult(resultDiv, '<div class="info">🚀 Launching Padding Oracle Attack on file... This may take a while.</div>', false);
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('known_prefix', knownPrefix);
+
+            const response = await fetch(`${API_URL}/padding-oracle-file`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `
+                    <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid #00ff88; padding: 15px; border-radius: 8px;">
+                        <strong style="color: #00ff88;">✅ FILE ATTACK SUCCESSFUL!</strong><br><br>
+                        <strong>Password Found:</strong> <code style="font-size: 1.2em;">${data.password}</code><br>
+                        <strong>Method:</strong> ${data.method}<br>
+                        <strong>Requests Made:</strong> ${data.requests_made}<br>
+                        <strong>File Size:</strong> ${data.file_size} bytes<br>
+                        <strong>Attack Time:</strong> ${data.attack_time.toFixed(2)} seconds
+                    </div>
+                `);
+            } else {
+                showResult(resultDiv, `
+                    <div style="background: rgba(255, 68, 68, 0.1); border: 2px solid #ff4444; padding: 15px; border-radius: 8px;">
+                        <strong style="color: #ff4444;">❌ File Attack Completed</strong><br><br>
+                        <strong>Status:</strong> ${data.error}<br>
+                        <strong>Requests Made:</strong> ${data.requests_made}<br>
+                        <strong>Attack Time:</strong> ${data.attack_time.toFixed(2)} seconds
+                    </div>
+                `, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function checkPaddingVulnerability() {
+        const text = document.getElementById('vulnerability-check-text').value;
+        const resultDiv = document.getElementById('vulnerability-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter encrypted text to analyze', true);
+            return;
+        }
+
+        showResult(resultDiv, '<div class="info">🔍 Analyzing encryption for padding vulnerabilities...</div>', false);
+
+        try {
+            const response = await fetch(`${API_URL}/detect-padding-vulnerability`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ciphertext: text })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                const vuln = data.vulnerability;
+                const riskColor = vuln.overall_risk === 'High' ? '#ff4444' : 
+                                 vuln.overall_risk === 'Medium' ? '#ffaa00' : '#00ff88';
+                
+                showResult(resultDiv, `
+                    <div style="border: 2px solid ${riskColor}; padding: 15px; border-radius: 8px;">
+                        <strong style="color: ${riskColor};">📊 VULNERABILITY ANALYSIS</strong><br><br>
+                        <strong>Fernet Detected:</strong> ${vuln.fernet_detected ? '✅ Yes' : '❌ No'}<br>
+                        <strong>Padding Errors Detected:</strong> ${vuln.padding_errors_detected ? '✅ Yes' : '❌ No'}<br>
+                        <strong>Overall Risk:</strong> <span style="color: ${riskColor}; font-weight: bold;">${vuln.overall_risk}</span><br><br>
+                        ${vuln.overall_risk === 'High' ? 
+                          '⚠️ This encryption appears vulnerable to padding oracle attacks!' : 
+                          vuln.overall_risk === 'Medium' ? 
+                          'ℹ️ Some vulnerability indicators detected.' : 
+                          '✅ No significant vulnerabilities detected.'}
+                    </div>
+                `);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function performModernCrack() {
+        const text = document.getElementById('modern-crack-input').value;
+        const method = document.getElementById('crack-method').value;
+        const knownPrefix = document.getElementById('modern-known-prefix').value;
+        const resultDiv = document.getElementById('modern-crack-method-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter encrypted text', true);
+            return;
+        }
+
+        showResult(resultDiv, `<div class="info">🚀 Starting Modern Crack with method: ${method}...</div>`, false);
+
+        try {
+            const response = await fetch(`${API_URL}/modern-crack`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    ciphertext: text,
+                    method: method,
+                    known_prefix: knownPrefix,
+                    target_type: 'text'
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `
+                    <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid #00ff88; padding: 15px; border-radius: 8px;">
+                        <strong style="color: #00ff88;">✅ CRACK SUCCESSFUL!</strong><br><br>
+                        <strong>Password Found:</strong> <code style="font-size: 1.2em;">${data.password}</code><br>
+                        <strong>Method:</strong> ${data.method}<br>
+                        <strong>Time Elapsed:</strong> ${data.time_elapsed}<br>
+                        <strong>Decrypted Text:</strong><br>
+                        <div class="result-text" style="margin-top: 10px;">${data.text}</div>
+                    </div>
+                `);
+            } else {
+                showResult(resultDiv, `
+                    <div style="background: rgba(255, 68, 68, 0.1); border: 2px solid #ff4444; padding: 15px; border-radius: 8px;">
+                        <strong style="color: #ff4444;">❌ Crack Failed</strong><br><br>
+                        <strong>Error:</strong> ${data.error}<br>
+                        <strong>Method Used:</strong> ${data.method || 'Unknown'}<br>
+                        <strong>Time Elapsed:</strong> ${data.time_elapsed || 'N/A'}
+                    </div>
+                `, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    // ==================== HASH CRACKING FUNCTIONS ====================
+
+
+
+    // Replace your existing history functions with these enhanced versions
+
+    async function loadCombinedHistory() {
+        console.log("🔄 Loading ALL operations history...");
+        
+        const operationType = document.getElementById('history-operation-type').value;
+
+        try {
+            const params = new URLSearchParams();
+            if (operationType && operationType !== 'all') {
+                params.append('operation_type', operationType);
+            }
+            params.append('limit', '100'); // Show more operations
+
+            const url = `${API_URL}/history/combined?${params.toString()}`;
+            console.log("📡 Fetching combined history:", url);
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.success) {
+                displayEnhancedHistory(data.history);
+            } else {
+                throw new Error(data.error || 'Failed to load history');
+            }
+        } catch (error) {
+            console.error('❌ Error loading history:', error);
+            document.getElementById('historyTableBody').innerHTML = `
+                <tr>
+                    <td colspan="5" class="error" style="text-align: center; padding: 30px;">
+                        ❌ Error loading history: ${error.message}
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function clearHistoryFilters() {
+        document.getElementById('history-operation-type').value = 'all';
+        loadCombinedHistory();
+    }
+
+    // Update the tab switching to load history automatically
+    function showTab(tabName) {
+        const tabs = document.querySelectorAll('.tab-content');
+        const btns = document.querySelectorAll('.tab-btn');
+        
+        tabs.forEach(tab => tab.classList.remove('active'));
+        btns.forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabName).classList.add('active');
+        event.target.classList.add('active');
+
+        // Load specific data when switching to certain tabs
+        if (tabName === 'history') {
+            loadCombinedHistory();
+        } else if (tabName === 'hash-crack') {
+            loadHashHistory();
+        }
+    }
+
+    async function loadHashHistory() {
+        try {
+            console.log("🔄 Loading hash history from database...");
+            const response = await fetch(`${API_URL}/hash-history?limit=20`);
+            const data = await response.json();
+
+            if (data.success) {
+                let html = '<h4>Recent Hash Operations:</h4>';
+                
+                if (!data.hash_history || data.hash_history.length === 0) {
+                    html += '<p style="color: #94a3b8; padding: 20px; text-align: center;">No hash operations found in database</p>';
+                } else {
+                    // Sort by timestamp (newest first)
+                    data.hash_history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    data.hash_history.forEach((op, index) => {
+                        const date = op.timestamp ? new Date(op.timestamp).toLocaleString() : 'Unknown date';
+                        const hashType = op.hash_type ? op.hash_type.toUpperCase() : 'UNKNOWN';
+                        
+                        // 🎯 CRITICAL FIX: Determine if this is GENERATION or CRACKING
+                        // If original_text exists and cracked_text is empty, it's GENERATION
+                        // If cracked_text exists and is not empty, it's SUCCESSFUL CRACKING
+                        // If cracked is false and no cracked_text, it's FAILED CRACKING
+                        
+                        const isGeneration = op.original_text && op.original_text.trim() !== '' && 
+                                        (!op.cracked_text || op.cracked_text.trim() === '');
+                        const isSuccessfulCrack = op.cracked === true || 
+                                                (op.cracked_text && op.cracked_text.trim() !== '');
+                        
+                        let status, statusColor, operationType;
+                        
+                        if (isGeneration) {
+                            status = '🔗 HASH GENERATED';
+                            statusColor = '#ffaa00'; // Orange for generation
+                            operationType = 'Generation';
+                        } else if (isSuccessfulCrack) {
+                            status = '✅ HASH CRACKED';
+                            statusColor = '#00ff88'; // Green for successful crack
+                            operationType = 'Cracking';
+                        } else {
+                            status = '❌ CRACK FAILED';
+                            statusColor = '#ff4444'; // Red for failed crack
+                            operationType = 'Cracking';
+                        }
+                        
+                        html += `
+                            <div class="history-item" style="border-left-color: ${statusColor}; margin-bottom: 15px; padding: 15px;">
+                                <div class="timestamp" style="font-size: 0.8em; color: #64748b;">${date}</div>
+                                <div class="operation" style="color: ${statusColor}; font-weight: bold; margin: 8px 0; font-size: 1.1em;">
+                                    ${hashType} - ${status}
+                                </div>
+                                <div style="margin: 5px 0;"><strong>Operation:</strong> ${operationType}</div>
+                                
+                                ${isGeneration ? `
+                                    <div style="margin: 5px 0;"><strong>Original Text:</strong> 
+                                        <code style="background: rgba(255,170,0,0.1); padding: 2px 6px; border-radius: 4px;">
+                                            ${op.original_text}
+                                        </code>
+                                    </div>
+                                    <div style="margin: 5px 0;"><strong>Generated Hash:</strong> 
+                                        <code style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;">
+                                            ${op.hash_value}
+                                        </code>
+                                    </div>
+                                ` : `
+                                    <div style="margin: 5px 0;"><strong>Target Hash:</strong> 
+                                        <code style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;">
+                                            ${op.hash_value}
+                                        </code>
+                                    </div>
+                                    ${isSuccessfulCrack ? `
+                                        <div style="margin: 5px 0;"><strong>Cracked Text:</strong> 
+                                            <code style="color: #00ff88; background: rgba(0,255,136,0.1); padding: 2px 6px; border-radius: 4px; font-weight: bold;">
+                                                ${op.cracked_text}
+                                            </code>
+                                        </div>
+                                    ` : ''}
+                                `}
+                                
+                                ${!isGeneration && op.attempts_made > 0 ? `<div style="margin: 5px 0;"><strong>Attempts:</strong> ${op.attempts_made}</div>` : ''}
+                                ${!isGeneration && op.crack_time > 0 ? `<div style="margin: 5px 0;"><strong>Time:</strong> ${op.crack_time.toFixed(2)}s</div>` : ''}
+                            </div>
+                        `;
+                    });
+                }
+                document.getElementById('hash-history-list').innerHTML = html;
+                console.log("✅ Hash history loaded successfully");
+            } else {
+                throw new Error(data.error || 'Failed to load hash history');
+            }
+        } catch (error) {
+            console.error('❌ Error loading hash history:', error);
+            document.getElementById('hash-history-list').innerHTML = `
+                <div style="color: #ff4444; padding: 20px; text-align: center; background: rgba(255,68,68,0.1); border-radius: 8px;">
+                    ❌ Error loading hash history: ${error.message}
+                    <br><br>
+                    <button class="btn btn-secondary" onclick="loadHashHistory()" style="margin-top: 10px;">
+                        🔄 Retry Loading History
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    // ==================== HISTORY FUNCTIONS ====================
+
+    async function downloadHistoryFile(operationId, fileName) {
+        try {
+            const response = await fetch(`${API_URL}/download-file/${operationId}`);
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                alert('❌ File not available for download');
+            }
+        } catch (error) {
+            alert('❌ Error downloading file: ' + error.message);
+        }
+    }
+    
+    async function generateHash() {
+        const text = document.getElementById('hash-text').value;
+        const hashType = document.getElementById('hash-type').value;
+        const resultDiv = document.getElementById('hash-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter text to hash', true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/hash-text`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, hash_type: hashType })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `
+                    <strong>${hashType.toUpperCase()} Hash:</strong><br>
+                    <div class="result-text" style="background: rgba(255,170,0,0.1); padding: 10px; border-radius: 6px;">${data.hash_value}</div>
+                    <br><strong>Operation ID:</strong> ${data.operation_id}
+                `);
+                
+                // 🎯 AUTO-REFRESH HISTORY AFTER HASH GENERATION
+                setTimeout(() => {
+                    if (document.getElementById('history').classList.contains('active')) {
+                        loadCombinedHistory();
+                    }
+                    loadHashHistory(); // Refresh hash-specific history
+                }, 500);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function crackHash() {
+        const hash = document.getElementById('crack-hash-input').value;
+        const hashType = document.getElementById('crack-hash-type').value;
+        const resultDiv = document.getElementById('crack-hash-result');
+        const progressBar = document.getElementById('hash-progress');
+        const progressInner = document.getElementById('hash-progress-inner');
+
+        if (!hash) {
+            showResult(resultDiv, 'Please enter a hash to crack', true);
+            return;
+        }
+
+        showResult(resultDiv, '<div class="info">🔍 Starting hash cracking... This may take a few seconds.</div>', false);
+        progressBar.style.display = 'block';
+        progressInner.style.width = '0%';
+
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 10;
+            if (progress > 90) progress = 90;
+            progressInner.style.width = progress + '%';
+        }, 200);
+
+        try {
+            const response = await fetch(`${API_URL}/crack-hash`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    hash: hash,
+                    hash_type: hashType,
+                    timeout: 30
+                })
+            });
+
+            clearInterval(progressInterval);
+            progressInner.style.width = '100%';
+
+            const data = await response.json();
+            
+            // 🎯 FORCE RELOAD BOTH HISTORIES AFTER CRACK ATTEMPT
+            setTimeout(() => {
+                if (document.getElementById('history').classList.contains('active')) {
+                    loadCombinedHistory();
+                }
+                loadHashHistory();
+            }, 500);
+
+            if (data.success) {
+                const result = data.result;
+                if (result.success) {
+                    showResult(resultDiv, `
+                        <div class="hash-result cracked">
+                            <strong style="color: #00ff88;">✅ HASH CRACKED SUCCESSFULLY!</strong><br><br>
+                            <strong>Method:</strong> ${result.method}<br>
+                            <strong>Password:</strong> <code style="font-size: 1.2em;">${result.password}</code><br>
+                            <strong>Attempts:</strong> ${result.attempts}<br>
+                            <strong>Time Taken:</strong> ${result.time_taken.toFixed(2)} seconds<br>
+                            <strong>Original Hash:</strong> ${hash}
+                        </div>
+                    `);
+                } else {
+                    showResult(resultDiv, `
+                        <div class="hash-result">
+                            <strong style="color: #ff4444;">❌ Hash not cracked</strong><br><br>
+                            <strong>Attempts:</strong> ${result.attempts}<br>
+                            <strong>Time Taken:</strong> ${result.time_taken.toFixed(2)} seconds<br>
+                            <strong>Message:</strong> ${result.message}
+                        </div>
+                    `, true);
+                }
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            clearInterval(progressInterval);
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        } finally {
+            setTimeout(() => {
+                progressBar.style.display = 'none';
+            }, 1000);
+        }
+    }
+
+    function displayEnhancedHistory(history) {
+        const tableBody = document.getElementById('historyTableBody');
+        
+        if (!history || history.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #94a3b8;">
+                        📭 No operations found
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        let html = '';
+        
+        // Sort by timestamp (newest first)
+        history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        history.forEach(op => {
+            const timestamp = new Date(op.timestamp).toLocaleString();
+            
+            // Determine operation type and icon - ENHANCED FOR HASH OPERATIONS
+            let typeIcon, typeText, typeColor;
+            switch(op.operation_type) {
+                case 'encrypt':
+                    typeIcon = '🔒';
+                    typeText = 'Encrypted';
+                    typeColor = '#00d9ff';
+                    break;
+                case 'decrypt':
+                    typeIcon = '🔓';
+                    typeText = 'Decrypted';
+                    typeColor = '#00ff88';
+                    break;
+                case 'hash_generate':
+                    typeIcon = '🔗';
+                    typeText = 'Hash Generated';
+                    typeColor = '#ffaa00';
+                    break;
+                case 'hash_crack':
+                    typeIcon = '🔍';
+                    typeText = 'Hash Cracked';
+                    typeColor = '#ff4444';
+                    break;
+                case 'auto-crack':
+                    typeIcon = '🤖';
+                    typeText = 'Auto Cracked';
+                    typeColor = '#9d4edd';
+                    break;
+                case 'auto-crack-modern':
+                    typeIcon = '⚡';
+                    typeText = 'Modern Cracked';
+                    typeColor = '#9d4edd';
+                    break;
+                default:
+                    typeIcon = '🔧';
+                    typeText = op.operation_type;
+                    typeColor = '#94a3b8';
+            }
+
+            // Determine method and icon - ENHANCED FOR HASH TYPES
+            let methodIcon = '📝';
+            let methodText = op.cipher_type || 'Unknown';
+            
+            if (op.cipher_type && op.cipher_type.includes('hash_')) {
+                methodIcon = '🔐';
+                const hashType = op.cipher_type.replace('hash_', '').toUpperCase();
+                methodText = op.operation_type === 'hash_crack' ? 
+                    `Cracked ${hashType}` : `${hashType} Hash`;
+            } else if (op.cipher_type === 'aes') {
+                methodIcon = '⚡';
+            } else if (op.cipher_type === 'caesar' || op.cipher_type === 'vigenere') {
+                methodIcon = '🔤';
+            } else if (op.cipher_type === 'base64') {
+                methodIcon = '📄';
+            } else if (op.cipher_type === 'LSB') {
+                methodIcon = op.operation_type === 'encrypt' ? '🖼️' : '🔍';
+                methodText = op.operation_type === 'encrypt' ? 'Image Hidden' : 'Image Extracted';
+            }
+
+            // Format input/output text - SPECIAL HANDLING FOR HASHES
+            let inputPreview, outputPreview;
+            
+            if (op.operation_type === 'hash_generate') {
+                inputPreview = op.input_text ? 
+                    (op.input_text.length > 30 ? op.input_text.substring(0, 30) + '...' : op.input_text) : 
+                    '—';
+                outputPreview = op.output_text ? 
+                    `<code style="background: rgba(255,170,0,0.1); padding: 2px 4px; border-radius: 3px;">${op.output_text.substring(0, 20)}...</code>` : 
+                    '—';
+            } else if (op.operation_type === 'hash_crack') {
+                inputPreview = op.input_text ? 
+                    `<code style="background: rgba(255,68,68,0.1); padding: 2px 4px; border-radius: 3px;">${op.input_text.substring(0, 20)}...</code>` : 
+                    '—';
+                outputPreview = op.output_text ? 
+                    `<strong style="color: #00ff88;">${op.output_text}</strong>` : 
+                    '—';
+            } else {
+                inputPreview = op.input_text ? 
+                    (op.input_text.length > 30 ? op.input_text.substring(0, 30) + '...' : op.input_text) : 
+                    '—';
+                outputPreview = op.output_text ? 
+                    (op.output_text.length > 30 ? op.output_text.substring(0, 30) + '...' : op.output_text) : 
+                    '—';
+            }
+
+            // Download link for file operations
+            let downloadLink = '';
+            if (op.file_name || op.is_file_operation || op.is_image_operation || op.is_audio_operation) {
+                const fileName = op.file_name || 
+                            (op.is_image_operation ? 'encoded_image.png' : 
+                                op.is_audio_operation ? 'encoded_audio.wav' : 
+                                'encrypted_file');
+                
+                downloadLink = `
+                    <button class="btn btn-secondary" onclick="downloadHistoryFile('${op.id}', '${fileName}')" 
+                            style="padding: 6px 12px; font-size: 0.8rem;">
+                        📥 Download
+                    </button>
+                `;
+            } else {
+                downloadLink = '<span style="color: #64748b;">—</span>';
+            }
+
+            html += `
+                <tr>
+                    <td>
+                        <div style="font-size: 0.9em; color: #94a3b8;">
+                            ${timestamp}
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px; color: ${typeColor};">
+                            <span style="font-size: 1.2em;">${typeIcon}</span>
+                            <span style="font-weight: 600;">${typeText}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 1.1em;">${methodIcon}</span>
+                            <span>${methodText}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9em;">
+                            <div><strong>Input:</strong> ${inputPreview}</div>
+                            <div><strong>Output:</strong> ${outputPreview}</div>
+                            ${op.key_used && op.key_used !== 'None' && op.key_used !== op.cipher_type ? 
+                            `<div><strong>Key/Method:</strong> ${op.key_used}</div>` : ''}
+                        </div>
+                    </td>
+                    <td>
+                        ${downloadLink}
+                    </td>
+                </tr>
+            `;
+        });
+        
+        tableBody.innerHTML = html;
+    }
+    // ==================== BASIC CRYPTO FUNCTIONS ====================
+
+    async function encryptText() {
+        const text = document.getElementById('encrypt-text').value;
+        const cipher = document.getElementById('encrypt-cipher').value;
+        const key = document.getElementById('encrypt-key').value;
+        const resultDiv = document.getElementById('encrypt-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter text to encrypt', true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/encrypt`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    cipher_type: cipher,
+                    text: text, 
+                    key: key 
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `<strong>Encrypted (${cipher}):</strong><br>${data.result}`);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function decryptText() {
+        const text = document.getElementById('decrypt-text').value;
+        const cipher = document.getElementById('decrypt-cipher').value;
+        const key = document.getElementById('decrypt-key').value;
+        const resultDiv = document.getElementById('decrypt-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter text to decrypt', true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/decrypt`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    cipher_type: cipher,
+                    text: text, 
+                    key: key 
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `<strong>Decrypted (${cipher}):</strong><br>${data.result}`);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function crackCipher() {
+        const text = document.getElementById('crack-text').value;
+        const resultDiv = document.getElementById('crack-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter text to crack', true);
+            return;
+        }
+
+        showResult(resultDiv, '<p class="info">Cracking cipher... This may take a moment...</p>', false);
+
+        try {
+            const response = await fetch(`${API_URL}/auto-crack`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                let html = '<div class="result-box"><h3>Results:</h3>';
+                data.results.forEach((result, idx) => {
+                    html += `<div style="margin-bottom: 15px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 6px;">
+                        <strong style="color: #00d9ff;">${idx + 1}. ${result.cipher}</strong> (Score: ${result.score})<br>
+                        <div class="result-text">${result.text}</div>
+                    </div>`;
+                });
+                html += '</div>';
+                resultDiv.innerHTML = html;
+                resultDiv.classList.add('show');
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    // ==================== STEGANOGRAPHY FUNCTIONS ====================
+
+    async function encodeImage() {
+        const file = document.getElementById('steg-encode-image').files[0];
+        const message = document.getElementById('steg-encode-message').value;
+
+        if (!file || !message) {
+            alert('Please select image and enter message');
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('message', message);
+
+            const response = await fetch(`${API_URL}/image-hide`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'encoded_image.png';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                const errorData = await response.json();
+                alert('Error encoding image: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+
+    async function decodeImage() {
+        const file = document.getElementById('steg-decode-image').files[0];
+        const resultDiv = document.getElementById('steg-result');
+
+        if (!file) {
+            showResult(resultDiv, 'Please select image', true);
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch(`${API_URL}/image-extract`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `<strong>Hidden Message:</strong><br><div class="result-text">${data.message}</div>`);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function encodeAudio() {
+        const file = document.getElementById('audio-encode-file').files[0];
+        const message = document.getElementById('audio-encode-message').value;
+
+        if (!file || !message) {
+            alert('Please select audio file and enter message');
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('message', message);
+
+            const response = await fetch(`${API_URL}/audio-hide`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'encoded_audio.wav';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                alert('Error encoding audio');
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+
+    async function decodeAudio() {
+        const file = document.getElementById('audio-decode-file').files[0];
+        const resultDiv = document.getElementById('audio-result');
+
+        if (!file) {
+            showResult(resultDiv, 'Please select audio file', true);
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch(`${API_URL}/audio-extract`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `<strong>Hidden Message:</strong><br><div class="result-text">${data.message}</div>`);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    // ==================== MODERN CRYPTO FUNCTIONS ====================
+
+    async function base64Encode() {
+        const text = document.getElementById('base64-text').value;
+        const resultDiv = document.getElementById('base64-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter text', true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/encrypt`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cipher_type: 'base64', text })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `<strong>Base64 Encoded:</strong><br>${data.result}`);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function base64Decode() {
+        const text = document.getElementById('base64-text').value;
+        const resultDiv = document.getElementById('base64-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter text', true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/decrypt`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cipher_type: 'base64', text })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `<strong>Base64 Decoded:</strong><br>${data.result}`);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function sha256Hash() {
+        const text = document.getElementById('sha256-text').value;
+        const resultDiv = document.getElementById('sha256-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter text', true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/hash`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `<strong>SHA-256 Hash:</strong><br><div class="result-text">${data.hash}</div>`);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function aesEncrypt() {
+        const text = document.getElementById('aes-text').value;
+        const password = document.getElementById('aes-password').value;
+        const resultDiv = document.getElementById('aes-result');
+
+        if (!text || !password) {
+            showResult(resultDiv, 'Please enter text and password', true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/encrypt`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cipher_type: 'aes', text, key: password })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `<strong>Encrypted (AES):</strong><br>${data.result}`);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function aesDecrypt() {
+        const text = document.getElementById('aes-text').value;
+        const password = document.getElementById('aes-password').value;
+        const resultDiv = document.getElementById('aes-result');
+
+        if (!text || !password) {
+            showResult(resultDiv, 'Please enter encrypted text and password', true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/decrypt`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cipher_type: 'aes', text, key: password })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `<strong>Decrypted (AES):</strong><br>${data.result}`);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    // ==================== FILE OPERATIONS ====================
+
+    async function encryptFile() {
+        const file = document.getElementById('file-encrypt-input').files[0];
+        const password = document.getElementById('file-encrypt-password').value;
+
+        if (!file || !password) {
+            alert('Please select file and enter password');
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('password', password);
+
+            const response = await fetch(`${API_URL}/file-encrypt`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = file.name + '.enc';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                const errorData = await response.json();
+                alert('Error encrypting file: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+
+    async function decryptFile() {
+        const file = document.getElementById('file-decrypt-input').files[0];
+        const password = document.getElementById('file-decrypt-password').value;
+        const resultDiv = document.getElementById('file-decrypt-result');
+
+        if (!file || !password) {
+            showResult(resultDiv, 'Please select file and enter password', true);
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('password', password);
+
+            const response = await fetch(`${API_URL}/file-decrypt`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'decrypted_file';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                const errorData = await response.json();
+                showResult(resultDiv, `Error: ${errorData.error || 'Invalid password'}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    async function bruteForceFile() {
+        const file = document.getElementById('file-decrypt-input').files[0];
+        const resultDiv = document.getElementById('file-decrypt-result');
+
+        if (!file) {
+            showResult(resultDiv, 'Please select encrypted file', true);
+            return;
+        }
+
+        showResult(resultDiv, '<div class="info">Trying common passwords...</div>', false);
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch(`${API_URL}/file-brute-force`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showResult(resultDiv, `<strong>Success!</strong><br>Password: <code>${data.password}</code><br><br>Content Preview:<br><div class="result-text">${data.content.substring(0, 200)}</div>`);
+            } else {
+                showResult(resultDiv, `${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    // ==================== AUTO CRACK MODERN ====================
+
+    async function autoCrackModern() {
+        const text = document.getElementById('modern-crack-text').value;
+        const resultDiv = document.getElementById('modern-crack-result');
+
+        if (!text) {
+            showResult(resultDiv, 'Please enter text to crack', true);
+            return;
+        }
+
+        showResult(resultDiv, '<p class="info">Attempting to crack modern cryptography... This may take a moment...</p>', false);
+
+        try {
+            const response = await fetch(`${API_URL}/auto-crack-modern`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                let html = '<h3>Cracking Results:</h3>';
+                
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach((result, idx) => {
+                        html += `<div style="margin-bottom: 20px; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; border-left: 4px solid #00d9ff;">
+                            <strong style="color: #00d9ff;">${idx + 1}. ${result.cipher}</strong> 
+                            <span style="color: #00ff88;">(Confidence: ${result.confidence})</span><br>
+                            ${result.password ? `<strong>Password:</strong> <code>${result.password}</code><br>` : ''}
+                            <strong>Score:</strong> ${result.score.toFixed(2)}<br>
+                            <div class="result-text" style="margin-top: 10px; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 4px;">${result.text}</div>
+                        </div>`;
+                    });
+                } else {
+                    html += '<p class="error">No encryption methods detected or could not crack the text.</p>';
+                }
+                
+                showResult(resultDiv, html, false);
+            } else {
+                showResult(resultDiv, `Error: ${data.error}`, true);
+            }
+        } catch (error) {
+            showResult(resultDiv, `Error: ${error.message}`, true);
+        }
+    }
+
+    // ==================== UTILITY FUNCTIONS ====================
+
+    function showResult(element, content, isError = false) {
+        if (typeof element === 'string') {
+            element = document.getElementById(element);
+        }
+        const className = isError ? 'error' : 'success';
+        element.innerHTML = `<div class="${className}">${content}</div>`;
+        element.classList.add('show');
+    }
+</script>
+</body>
+</html>

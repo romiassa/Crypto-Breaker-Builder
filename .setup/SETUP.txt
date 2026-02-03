@@ -1,0 +1,38 @@
+CRYPTOVAULT - QUICK START GUIDE
+
+STEP 1: Install Python
+- Download Python 3.8+ from python.org
+- Install with "Add Python to PATH" checked
+
+STEP 2: Create Project Folder
+- Extract all files to a folder
+- Open command prompt/terminal in folder
+
+STEP 3: Create Virtual Environment
+Windows:
+  python -m venv venv
+  venv\Scripts\activate
+
+Mac/Linux:
+  python3 -m venv venv
+  source venv/bin/activate
+
+STEP 4: Install Dependencies
+  pip install requirements.txt
+
+STEP 5: Run Application
+  python main.py
+
+You should see:
+  Uvicorn running on http://0.0.0.0:8000
+
+
+
+
+
+for daily run :
+
+cd ./code/
+source venv/bin/activate  
+
+python cryptotool_tkinter.py

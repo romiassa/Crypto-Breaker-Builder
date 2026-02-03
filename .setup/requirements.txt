@@ -1,0 +1,35 @@
+# GUI & Core Dependencies
+tk==0.1.0
+Pillow==10.1.0
+tkinterdnd2==0.3.0
+
+# Cryptography & Security
+cryptography==41.0.7
+pycryptodome==3.19.1
+fernet==1.0.1
+hashlib==20081119
+
+# Database
+sqlite3==2.6.0
+
+# Network & Security Scanning
+python-nmap==0.7.1
+pyOpenSSL==23.2.0
+requests==2.31.0
+
+# Audio Processing (for Audio Steganography)
+pydub==0.25.1
+wave==0.0.2
+audioop==1.4
+
+# Image Processing (for Image Steganography)
+PIL==1.1.7
+opencv-python==4.8.1.78
+numpy==1.24.3
+
+# Concurrency & Performance
+setuptools==69.0.2
+threading==3.11.4
+multiprocessing==3.11.4
+concurrent-futures==3.11.4
+
