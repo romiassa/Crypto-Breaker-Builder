@@ -1,0 +1,14 @@
+# Create a new requirements.txt file with correct packages
+@"
+Pillow==10.1.0
+tkinterdnd2==0.3.0
+cryptography==41.0.7
+pycryptodome==3.19.1
+fernet==1.0.1
+python-nmap==0.7.1
+pyOpenSSL==23.2.0
+requests==2.31.0
+pydub==0.25.1
+opencv-python==4.8.1.78
+numpy==1.24.3
+"@ | Out-File -FilePath requirements.txt -Encoding utf8
